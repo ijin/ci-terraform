@@ -1,0 +1,96 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: circleci/ruby:2.6.2-node-browsers
+        environment:
+          TFNOTIFY_VERSION: 0.3.0
+          TFNOTIFY_URL: https://github.com/mercari/tfnotify/releases/download/v${TFNOTIFY_VERSION}/tfnotify_v${TFNOTIFY_VERSION}_linux_amd64.tar.gz
+
+
+  plan: &plan
+    executor: terraform-executor
+    steps:
+      - checkout
+      - install-notifier
+      - run:
+          name: terraform plan
+          command: |
+            #TODO: share.auto.tfvars
+            cd common
+            terraform init -input=false
+            terraform workspace list
+            #terraform plan -input=false 2>&1 | tee /tmp/plan.log
+      - run:
+          name: tfnotify plan
+          command: |
+            #cat /tmp/plan.log | tfnotify plan --message ""
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            -  .terraform
+            -  tfnotify
+  plan-staging:
+    <<: *plan
+    environment:
+      TF_WORKSPACE: staging 
+  plan-production:
+    <<: *plan
+    environment:
+      TF_WORKSPACE: production
+
+  apply:
+    executor: terraform-executor
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - checkout
+      - run:
+          name: terraform apply
+          command: |
+            #terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+            echo "applying..."
+          no_output_timeout: 60m
+      - run:
+          name: tfnotify apply
+          command: |
+            #cat /tmp/apply.log | tfnotify apply --message ""
+
+executors:
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:0.11.10
+
+
+commands:
+  install-notifier:
+    steps:
+      - restore_cache:
+          keys:
+          - v1-{{ checksum "tfnotify" }}
+          - v1-
+      - run:
+          name: install dependencies
+          command: |
+            wget $TFNOTIFY_URL  -O /tmp/t.tgz
+            tar xvfz /tmp/t.tgz -C /tmp/
+            mv /tmp/tfnotify*/tfnotify ~/project/
+      - save_cache:
+          paths:
+            - ./tfnotify
+          key: v1-{{ checksum "tfnotify" }}
+
+workflows:
+  version: 2
+  plan-and-apply:
+    jobs:
+      - plan-staging:
+      - plan-production:
+          requires:
+            - plan-staging
+#      - apply:
+#          requires:
+#          filters:
+#            branches:
+#              only:
+#                - master
