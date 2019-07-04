@@ -68,6 +68,7 @@ commands:
       - run:
           name: install dependencies
           command: |
+            echo $TFNOTIFY_URL
             wget $TFNOTIFY_URL  -O /tmp/t.tgz
             tar xvfz /tmp/t.tgz -C /tmp/
             mv /tmp/tfnotify*/tfnotify ~/project/
