@@ -1,13 +1,5 @@
 version: 2.0
 jobs:
-  test:
-    docker:
-      - image: circleci/ruby:2.6.2-node-browsers
-        environment:
-          TFNOTIFY_VERSION: 0.3.0
-          TFNOTIFY_URL: https://github.com/mercari/tfnotify/releases/download/v${TFNOTIFY_VERSION}/tfnotify_v${TFNOTIFY_VERSION}_linux_amd64.tar.gz
-
-
   plan: &plan
     executor: terraform-executor
     steps:
@@ -30,6 +22,7 @@ jobs:
           paths:
             -  .terraform
             -  tfnotify
+
   plan-staging:
     <<: *plan
     environment:
@@ -60,6 +53,9 @@ executors:
   terraform-executor:
     docker:
       - image: hashicorp/terraform:0.11.10
+        environment:
+          TFNOTIFY_VERSION: 0.3.0
+          TFNOTIFY_URL: https://github.com/mercari/tfnotify/releases/download/v${TFNOTIFY_VERSION}/tfnotify_v${TFNOTIFY_VERSION}_linux_amd64.tar.gz
 
 
 commands:
