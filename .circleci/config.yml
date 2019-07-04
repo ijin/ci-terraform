@@ -54,8 +54,7 @@ executors:
     docker:
       - image: hashicorp/terraform:0.11.10
         environment:
-          TFNOTIFY_VERSION: 0.3.0
-          TFNOTIFY_URL: https://github.com/mercari/tfnotify/releases/download/v$TFNOTIFY_VERSION/tfnotify_v$TFNOTIFY_VERSION_linux_amd64.tar.gz
+          TFNOTIFY_URL: https://github.com/mercari/tfnotify/releases/download/v0.3.0/tfnotify_v0.3.0.tar.gz
 
 
 commands:
@@ -68,7 +67,6 @@ commands:
       - run:
           name: install dependencies
           command: |
-            echo $TFNOTIFY_URL
             wget $TFNOTIFY_URL  -O /tmp/t.tgz
             tar xvfz /tmp/t.tgz -C /tmp/
             mv /tmp/tfnotify*/tfnotify ~/project/
