@@ -63,7 +63,7 @@ commands:
     steps:
       - restore_cache:
           keys:
-          - v1-{{ checksum "tfnotify" }}
+          - v1-{{ checksum ".circleci/config.yml" }}
           - v1-
       - run:
           name: install dependencies
@@ -74,7 +74,7 @@ commands:
       - save_cache:
           paths:
             - ./tfnotify
-          key: v1-{{ checksum "tfnotify" }}
+          key: v1-{{ checksum ".circleci/config.yml" }}
 
 workflows:
   version: 2
