@@ -145,19 +145,20 @@ workflows:
           context: ijinbot
       - plan-production:
           context: ijinbot
-      - apply-common:
-          requires:
-            - plan-common
-          filters:
-            branches:
-              only:
-                - master
       - notify-approval:
           requires:
             - plan-production
           filters:
             branches:
               only: release/production
+      - apply-common:
+          context: tfnotify
+          requires:
+            - plan-common
+          filters:
+            branches:
+              only:
+                - master
       - apply-staging:
           context: tfnotify
           filters:
