@@ -13,4 +13,3 @@ resource "aws_ecr_repository" "ci-tf" {
 #data "aws_ssm_parameter" "db_passord" {
 #  name = "${local.ssm}/db_password"
 #}
-
