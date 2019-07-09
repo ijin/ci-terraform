@@ -142,6 +142,11 @@ workflows:
       - apply-common:
           requires:
             - plan-common
+          filters:
+            branches:
+              only:
+                - develop
+                - master
       - plan-staging:
           filters:
             branches:
