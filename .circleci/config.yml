@@ -49,20 +49,20 @@ jobs:
                 terraform init -input=false
                 terraform workspace list
                 echo "applying..."
-                #terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+                terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
                 ;;
               *)
                 terraform init -input=false
                 terraform workspace list
                 echo "applying..."
-                #terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+                terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
                 ;;
             esac
           no_output_timeout: 60m
       - run:
           name: tfnotify apply
           command: |
-            #cat /tmp/apply.log | tfnotify apply --message "$TF_WORKSPACE"
+            cat /tmp/apply.log | ./tfnotify --config .circleci/tfnotify.slack.yml apply --message "$TF_WORKSPACE"
       - persist_to_workspace:
           root: ~/project
           paths:
@@ -159,10 +159,12 @@ workflows:
             branches:
               only: release/production
       - apply-staging:
+          context: tfnotify
           filters:
             branches:
               only: release/staging
       - apply-production:
+          context: tfnotify
           type: approval
           requires:
             - notify-approval
