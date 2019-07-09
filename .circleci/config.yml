@@ -47,6 +47,10 @@ jobs:
           name: tfnotify apply
           command: |
             #cat /tmp/apply.log | tfnotify apply --message "$TF_WORKSPACE"
+  hold:
+    executor: terraform-executor
+    steps:
+      - notify-appoval
 
 executors:
   terraform-executor:
@@ -73,16 +77,24 @@ commands:
           paths:
             - ./tfnotify
           key: v1-{{ checksum ".circleci/config.yml" }}
+  notify-approval:
+    steps:
+      - run:
+          name: send notification to slack
+          command: curl -X POST -H 'Content-type: application/json' --data "{\"text\": \"Please approve workflow from <https://circleci.com/workflow-run/${CIRCLE_WORKFLOW_ID}|here>.\"}" $SLACK_WEBHOOK_URL
 
 workflows:
   version: 2
   plan-and-apply:
     jobs:
       - plan-staging
-      - plan-production:
+      - hold:
           type: approval
           requires:
             - plan-staging
+      - plan-production:
+          requires:
+            - hold
 #      - apply:
 #          requires:
 #          filters:
