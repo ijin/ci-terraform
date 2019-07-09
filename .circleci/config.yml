@@ -32,6 +32,42 @@ jobs:
           paths:
             -  common/.terraform
             -  .terraform
+
+  apply: &apply
+    executor: terraform-executor
+    steps:
+      - checkout
+      - install-notifier
+      - run:
+          name: terraform apply
+          command: |
+            #TODO: share.auto.tfvars
+            case "$TF_WORKSPACE" in
+              common)
+                export TF_WORKSPACE=default
+                cd common
+                terraform init -input=false
+                terraform workspace list
+                echo "applying..."
+                #terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+                ;;
+              *)
+                terraform init -input=false
+                terraform workspace list
+                echo "applying..."
+                #terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+                ;;
+            esac
+          no_output_timeout: 60m
+      - run:
+          name: tfnotify apply
+          command: |
+            #cat /tmp/apply.log | tfnotify apply --message "$TF_WORKSPACE"
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            -  common/.terraform
+            -  .terraform
             -  tfnotify
 
   plan-common:
@@ -46,23 +82,15 @@ jobs:
     <<: *plan
     environment:
       TF_WORKSPACE: production
+  apply-common:
+    <<: *apply
+    environment:
+      TF_WORKSPACE: common
+  apply-staging:
+    <<: *apply
+    environment:
+      TF_WORKSPACE: staging
 
-  apply:
-    executor: terraform-executor
-    steps:
-      - attach_workspace:
-          at: ~/project
-      - checkout
-      - run:
-          name: terraform apply
-          command: |
-            #terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
-            echo "applying..."
-          no_output_timeout: 60m
-      - run:
-          name: tfnotify apply
-          command: |
-            #cat /tmp/apply.log | tfnotify apply --message "$TF_WORKSPACE"
   hold:
     executor: terraform-executor
     steps:
@@ -113,13 +141,10 @@ workflows:
       - hold:
           requires:
             - plan-staging
-      - plan-production:
+      - apply-staging:
           type: approval
           requires:
             - hold
-#      - apply:
-#          requires:
-#          filters:
-#            branches:
-#              only:
-#                - master
+            branches:
+              only:
+                - master
