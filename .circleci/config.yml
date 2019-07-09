@@ -90,6 +90,10 @@ jobs:
     <<: *apply
     environment:
       TF_WORKSPACE: staging
+  apply-production:
+    <<: *apply
+    environment:
+      TF_WORKSPACE: production
 
   hold:
     executor: terraform-executor
@@ -139,6 +143,9 @@ workflows:
           requires:
             - plan-common
       - plan-staging:
+          requires:
+            - apply-common
+      - plan-production:
           requires:
             - apply-common
       - hold:
