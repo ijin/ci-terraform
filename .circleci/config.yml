@@ -69,6 +69,8 @@ jobs:
 
 executors:
   terraform-executor:
+    environment:
+      AWS_DEFAULT_REGION: ap-northeast-1
     docker:
       - image: hashicorp/terraform:0.11.10
         environment:
