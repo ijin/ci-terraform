@@ -50,7 +50,7 @@ jobs:
   hold:
     executor: terraform-executor
     steps:
-      - notify-appoval
+      - notify-approval
 
 executors:
   terraform-executor:
