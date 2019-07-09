@@ -5,7 +5,7 @@ jobs:
     parameters:
       tf_workspace:
         type: enum
-        default: latest
+        default: staging
         enum: ["staging", "production"]
       myspecialvar:
     environment:
@@ -30,14 +30,6 @@ jobs:
           paths:
             -  .terraform
             -  tfnotify
-#  plan-staging:
-#    <<: *plan
-#    environment:
-#      TF_WORKSPACE: staging 
-#  plan-production:
-#    <<: *plan
-#    environment:
-#      TF_WORKSPACE: production
 
   apply:
     executor: terraform-executor
@@ -86,11 +78,6 @@ workflows:
   version: 2
   plan-and-apply:
     jobs:
-#      - plan-staging
-#      - plan-production:
-#          requires:
-#            - plan-staging
-
       - plan:
           name: plan-staging
           tf_workspace: staging
