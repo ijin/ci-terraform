@@ -90,10 +90,10 @@ workflows:
     jobs:
       - plan-staging
       - hold:
-          type: approval
           requires:
             - plan-staging
       - plan-production:
+          type: approval
           requires:
             - hold
 #      - apply:
