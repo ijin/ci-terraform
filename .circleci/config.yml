@@ -143,13 +143,18 @@ workflows:
           requires:
             - plan-common
       - plan-staging
-      - plan-production:
-          requires:
-            - apply-common
+          branches:
+            only:
+              - develop
+      - plan-production
+          branches:
+            only:
+              - master
       - hold:
           requires:
             - apply-common
             - plan-staging
+            - plan-production
       - apply-staging:
           type: approval
           requires:
