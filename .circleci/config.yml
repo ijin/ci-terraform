@@ -9,10 +9,19 @@ jobs:
           name: terraform plan
           command: |
             #TODO: share.auto.tfvars
-            cd common
-            terraform init -input=false
-            terraform workspace list
-            #terraform plan -input=false 2>&1 | tee /tmp/plan.log
+            case "$TF_WORKSPACE" in
+              common)
+                export TF_WORKSPACE=default
+                cd common
+                terraform init -input=false
+                terraform workspace list
+                #terraform plan -input=false 2>&1 | tee /tmp/plan.log
+                ;;
+              *)
+                terraform init -input=false
+                terraform workspace list
+                #terraform plan -input=false 2>&1 | tee /tmp/plan.log
+            esac
       - run:
           name: tfnotify plan
           command: |
@@ -22,6 +31,11 @@ jobs:
           paths:
             -  .terraform
             -  tfnotify
+
+  plan-common:
+    <<: *plan
+    environment:
+      TF_WORKSPACE: common
   plan-staging:
     <<: *plan
     environment:
@@ -88,7 +102,10 @@ workflows:
   version: 2
   plan-and-apply:
     jobs:
+      - plan-common
       - plan-staging
+          requires:
+            - plan-common
       - hold:
           requires:
             - plan-staging
