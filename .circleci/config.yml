@@ -152,6 +152,9 @@ workflows:
       - notify-approval:
           requires:
             - plan-production
+          filters:
+            branches:
+              only: release/production
       - apply-staging:
           filters:
             branches:
