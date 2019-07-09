@@ -80,6 +80,7 @@ workflows:
     jobs:
       - plan-staging
       - plan-production:
+          type: approval
           requires:
             - plan-staging
 #      - apply:
