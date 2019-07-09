@@ -135,9 +135,12 @@ workflows:
   plan-and-apply:
     jobs:
       - plan-common
-      - plan-staging:
+      - apply-common:
           requires:
             - plan-common
+      - plan-staging:
+          requires:
+            - apply-common
       - hold:
           requires:
             - plan-staging
