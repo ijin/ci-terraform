@@ -8,7 +8,7 @@ notifier:
     #channel: "$SLACK_CHANNEL_ID"
     bot: tfnotify
 terraform:
-  plan:
+  apply:
     template: |
       {{ .Message }}
       {{if .Result}}
@@ -18,4 +18,3 @@ terraform:
       {{end}}
       ```
       {{ .Body }}
-      ```
