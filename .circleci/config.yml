@@ -145,6 +145,6 @@ workflows:
           type: approval
           requires:
             - hold
-            branches:
-              only:
-                - master
+          branches:
+            only:
+              - master
