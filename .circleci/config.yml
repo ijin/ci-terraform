@@ -21,6 +21,7 @@ jobs:
                 terraform init -input=false
                 terraform workspace list
                 terraform plan -input=false 2>&1 | tee /tmp/plan.log
+                ;;
             esac
       - run:
           name: tfnotify plan
