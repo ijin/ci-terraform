@@ -95,7 +95,7 @@ jobs:
     environment:
       TF_WORKSPACE: production
 
-  hold:
+  notify-approval:
     executor: terraform-executor
     steps:
       - notify-approval
@@ -140,38 +140,26 @@ workflows:
   plan-and-apply:
     jobs:
       - plan-common
+      - plan-staging
+      - plan-production
       - apply-common:
           requires:
             - plan-common
           filters:
             branches:
               only:
-                - develop
                 - master
-      - plan-staging:
-          filters:
-            branches:
-              only: develop
-      - plan-production:
-          filters:
-            branches:
-              only: master
-      - hold:
+      - notify-approval:
           requires:
-            - apply-common
-            - plan-staging
             - plan-production
       - apply-staging:
-          type: approval
-          requires:
-            - hold
           filters:
             branches:
-              only: develop
+              only: release/staging
       - apply-production:
           type: approval
           requires:
-            - hold
+            - notify-approval
           filters:
             branches:
-              only: master
+              only: release/production
