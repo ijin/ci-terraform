@@ -30,7 +30,7 @@ resource "aws_kms_key" "ps" {
 #      value = 1
 #    }
 #}
-#
+
 #resource "aws_rds_cluster_parameter_group" "utf8mb4-cluster-aurora57" {
 #    name = "utf8mb4-aurora57"
 #    family = "aurora-mysql5.7"
