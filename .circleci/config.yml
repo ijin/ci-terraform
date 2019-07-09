@@ -145,7 +145,7 @@ workflows:
       - plan-staging:
           filters:
             branches:
-              only: master
+              only: develop
       - plan-production:
           filters:
             branches:
