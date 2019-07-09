@@ -1,0 +1,21 @@
+---
+ci: circleci
+notifier:
+  slack:
+    token: $SLACK_TOKEN
+    channel: '#test'
+    #channel: 'C0524JY5Z'
+    #channel: "$SLACK_CHANNEL_ID"
+    bot: tfnotify
+terraform:
+  plan:
+    template: |
+      {{ .Message }}
+      {{if .Result}}
+      ```
+      {{ .Result }}
+      ```
+      {{end}}
+      ```
+      {{ .Body }}
+      ```
