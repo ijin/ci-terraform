@@ -15,12 +15,12 @@ jobs:
                 cd common
                 terraform init -input=false
                 terraform workspace list
-                #terraform plan -input=false 2>&1 | tee /tmp/plan.log
+                terraform plan -input=false 2>&1 | tee /tmp/plan.log
                 ;;
               *)
                 terraform init -input=false
                 terraform workspace list
-                #terraform plan -input=false 2>&1 | tee /tmp/plan.log
+                terraform plan -input=false 2>&1 | tee /tmp/plan.log
             esac
       - run:
           name: tfnotify plan
