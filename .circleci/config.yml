@@ -26,7 +26,7 @@ jobs:
       - run:
           name: tfnotify plan
           command: |
-            #cat /tmp/plan.log | tfnotify plan --message "$TF_WORKSPACE"
+            cat /tmp/plan.log | tfnotify plan --config .circleci/tfnotify.github.yml --message "$TF_WORKSPACE"
       - persist_to_workspace:
           root: ~/project
           paths:
