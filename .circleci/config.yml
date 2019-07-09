@@ -103,7 +103,7 @@ workflows:
   plan-and-apply:
     jobs:
       - plan-common
-      - plan-staging
+      - plan-staging:
           requires:
             - plan-common
       - hold:
