@@ -139,9 +139,12 @@ workflows:
   version: 2
   plan-and-apply:
     jobs:
-      - plan-common
-      - plan-staging
-      - plan-production
+      - plan-common:
+          context: ijinbot
+      - plan-staging:
+          context: ijinbot
+      - plan-production:
+          context: ijinbot
       - apply-common:
           requires:
             - plan-common
