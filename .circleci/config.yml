@@ -49,13 +49,13 @@ jobs:
                 terraform init -input=false
                 terraform workspace list
                 echo "applying..."
-                terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+                terraform apply -input=false -lock=true -no-color -auto-approve 2>&1 | tee /tmp/apply.log
                 ;;
               *)
                 terraform init -input=false
                 terraform workspace list
                 echo "applying..."
-                terraform apply -input=false -lock=true -auto-approve 2>&1 | tee /tmp/apply.log
+                terraform apply -input=false -lock=true -no-color -auto-approve 2>&1 | tee /tmp/apply.log
                 ;;
             esac
           no_output_timeout: 60m
@@ -161,6 +161,8 @@ workflows:
                 - master
       - apply-staging:
           context: tfnotify
+          requires:
+            - plan-staging
           filters:
             branches:
               only: release/staging
@@ -168,6 +170,7 @@ workflows:
           context: tfnotify
           type: approval
           requires:
+            - plan-production
             - notify-approval
           filters:
             branches:
