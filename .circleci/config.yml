@@ -141,10 +141,24 @@ workflows:
     jobs:
       - plan-common:
           context: ijinbot
+          filters:
+            branches:
+              only:
+                - master
       - plan-staging:
           context: ijinbot
+          filters:
+            branches:
+              only:
+                - master
+                - release/staging
       - plan-production:
           context: ijinbot
+          filters:
+            branches:
+              only:
+                - master
+                - release/production
       - notify-approval:
           requires:
             - plan-production
