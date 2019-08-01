@@ -165,6 +165,10 @@ workflows:
           filters:
             branches:
               only: release/production
+      - request-approval:
+          type: approval
+          requires:
+            - notify-approval
       - apply-common:
           context: tfnotify
           requires:
@@ -182,10 +186,8 @@ workflows:
               only: release/staging
       - apply-production:
           context: tfnotify
-          type: approval
           requires:
-            - plan-production
-            - notify-approval
+            - request-approval
           filters:
             branches:
               only: release/production
