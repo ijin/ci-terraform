@@ -143,22 +143,20 @@ workflows:
           context: ijinbot
           filters:
             branches:
-              only:
-                - master
+              ignore:
+                - /release.*/
       - plan-staging:
           context: ijinbot
           filters:
             branches:
-              only:
-                - master
-                - release/staging
+              ignore:
+                - release/production
       - plan-production:
           context: ijinbot
           filters:
             branches:
-              only:
-                - master
-                - release/production
+              ignore:
+                - release/staging
       - notify-approval:
           requires:
             - plan-production
