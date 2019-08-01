@@ -168,10 +168,9 @@ workflows:
               only: release/staging
       - apply-production:
           context: tfnotify
-          requires:
-            - plan-production
           type: approval
           requires:
+            - plan-production
             - notify-approval
           filters:
             branches:
